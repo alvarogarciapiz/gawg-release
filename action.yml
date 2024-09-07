@@ -22,8 +22,15 @@ runs:
         echo "⚠️ Release is disabled. To enable it, set the RELEASE parameter to 'enabled' in the workflow configuration file." >> $GITHUB_STEP_SUMMARY
         echo ""
 
+    - name: Set up Git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
     - name: Generate TAG
       if: ${{ fromJson(inputs.config-json).RELEASE == 'enabled' }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       shell: bash
       run: |
         TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
@@ -32,6 +39,8 @@ runs:
 
     - name: generate release
       if: ${{ fromJson(inputs.config-json).RELEASE == 'enabled' }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       shell: bash
       run: |
         TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
