@@ -53,5 +53,5 @@ runs:
         TAG_NAME="v${PROJECT_VERSION}"
         echo "Generating release"
         echo "Config JSON: ${{ inputs.config-json }}"
-        gh release create $TAG_NAME --title "Release $TAG_NAME" --notes "Release generated from workflow" --repo ${{ github.repository }}
+        gh release create $TAG_NAME --title "$TAG_NAME" --notes "Release generated from workflow" --repo ${{ github.repository }}
         echo "Release generated"
