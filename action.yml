@@ -1,0 +1,38 @@
+name: 'GAWG Release action'
+description: 'This action generates a tag and release for the project inside GitHub.'
+author: Álvaro García Pizarro
+branding:
+  icon: 'git-commit'
+  color: 'gray-dark'
+
+inputs:
+  config-json:
+    type: string
+    description: 'JSON string containing workflow config parameters.'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: 
+      if: ${{ fromJson(inputs.config-json).RELEASE == 'disabled' }}
+      shell: bash
+      run: |
+        echo "Release is disabled. To enable it, set the RELEASE parameter to 'enabled' in the workflow configuration file."
+        echo ""
+
+    - name: Generate TAG
+      if: ${{ fromJson(inputs.config-json).RELEASE == 'enabled' }}
+      shell: bash
+      run: |
+        echo ""
+
+    - name: generate release
+      if: ${{ fromJson(inputs.config-json).RELEASE == 'enabled' }}
+      shell: bash
+      run: |
+        echo "Generating release"
+        echo "Config JSON: ${{ inputs.config-json }}"
+        echo "Release generated"
+        echo ""
+        
