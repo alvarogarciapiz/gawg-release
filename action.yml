@@ -18,21 +18,25 @@ runs:
       if: ${{ fromJson(inputs.config-json).RELEASE == 'disabled' }}
       shell: bash
       run: |
-        echo "Release is disabled. To enable it, set the RELEASE parameter to 'enabled' in the workflow configuration file."
+        echo "⚠️ Release is disabled. To enable it, set the RELEASE parameter to 'enabled' in the workflow configuration file."
+        echo "⚠️ Release is disabled. To enable it, set the RELEASE parameter to 'enabled' in the workflow configuration file." >> $GITHUB_STEP_SUMMARY
         echo ""
 
     - name: Generate TAG
       if: ${{ fromJson(inputs.config-json).RELEASE == 'enabled' }}
       shell: bash
       run: |
-        echo ""
+        TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
+        git tag $TAG_NAME
+        git push origin $TAG_NAME
 
     - name: generate release
       if: ${{ fromJson(inputs.config-json).RELEASE == 'enabled' }}
       shell: bash
       run: |
+        TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
         echo "Generating release"
         echo "Config JSON: ${{ inputs.config-json }}"
+        gh release create $TAG_NAME --title "Release $TAG_NAME" --notes "Release generated from workflow"
         echo "Release generated"
-        echo ""
         
