@@ -10,6 +10,10 @@ inputs:
     type: string
     description: 'JSON string containing workflow config parameters.'
     required: true
+  github-token:
+    type: string
+    description: 'GitHub token for authentication.'
+    required: true
 
 runs:
   using: "composite"
@@ -23,6 +27,7 @@ runs:
         echo ""
 
     - name: Set up Git
+      shell: bash
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -30,7 +35,7 @@ runs:
     - name: Generate TAG
       if: ${{ fromJson(inputs.config-json).RELEASE == 'enabled' }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
       shell: bash
       run: |
         TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
@@ -40,7 +45,7 @@ runs:
     - name: generate release
       if: ${{ fromJson(inputs.config-json).RELEASE == 'enabled' }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
       shell: bash
       run: |
         TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
