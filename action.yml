@@ -40,9 +40,9 @@ runs:
       run: |
         TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
         git tag $TAG_NAME
-        git push origin $TAG_NAME
+        git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} $TAG_NAME
 
-    - name: generate release
+    - name: Generate Release
       if: ${{ fromJson(inputs.config-json).RELEASE == 'enabled' }}
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
@@ -51,6 +51,6 @@ runs:
         TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
         echo "Generating release"
         echo "Config JSON: ${{ inputs.config-json }}"
-        gh release create $TAG_NAME --title "Release $TAG_NAME" --notes "Release generated from workflow"
+        gh release create $TAG_NAME --title "Release $TAG_NAME" --notes "Release generated from workflow" --repo ${{ github.repository }} --token $GITHUB_TOKEN
         echo "Release generated"
         
