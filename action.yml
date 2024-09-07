@@ -33,24 +33,25 @@ runs:
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
     - name: Generate TAG
-      if: ${{ fromJson(inputs.config-json).RELEASE == 'enabled' }}
+      if: ${{ fromJson(inputs.config-json).RELEASE == 'enabled' && fromJson(inputs.config-json).TESTING == 'enabled' }}
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
       shell: bash
       run: |
-        TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
+        PROJECT_VERSION=$(echo '${{ fromJson(inputs.config-json).PROJECT_VERSION }}')
+        TAG_NAME="v${PROJECT_VERSION}"
         git tag $TAG_NAME
         git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} $TAG_NAME
-
+    
     - name: Generate Release
-      if: ${{ fromJson(inputs.config-json).RELEASE == 'enabled' }}
+      if: ${{ fromJson(inputs.config-json).RELEASE == 'enabled' && fromJson(inputs.config-json).TESTING == 'enabled' }}
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
       shell: bash
       run: |
-        TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
+        PROJECT_VERSION=$(echo '${{ fromJson(inputs.config-json).PROJECT_VERSION }}')
+        TAG_NAME="v${PROJECT_VERSION}"
         echo "Generating release"
         echo "Config JSON: ${{ inputs.config-json }}"
         gh release create $TAG_NAME --title "Release $TAG_NAME" --notes "Release generated from workflow" --repo ${{ github.repository }}
         echo "Release generated"
-        
