@@ -56,7 +56,6 @@ runs:
         # Check if the tag already exists
         if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
           echo "⚠️ Tag $TAG_NAME already exists. Skipping tag creation." >> $GITHUB_STEP_SUMMARY
-          exit 1
         else
           echo "Creating tag $TAG_NAME in the repository."
           git tag $TAG_NAME
